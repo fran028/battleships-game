@@ -9,25 +9,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Observable;
 import java.util.List;
 
 /**
  *
  * @author franc
  */
-public class Model {
+public class Model extends Observable {
     Board board; 
-    Ship[] ships = new Ship[5];
+    Ship[] ships = new Ship[5]; 
+    private int shotsFiredCount = 0;
+    private int sunkShipsCount = 0; // Track sunk ships
     
     public Model(int gridSize){ 
-        this.board = new Board(gridSize);  
-        /*if(LoadShipFile()){
-            System.out.println("Ships loaded");
-        } else {
-            System.out.println("Error loading Ships");
-        }
-        AddShipsToBoard(); 
-        this.board.PrintBoardCLI(true); */
+        this.board = new Board(gridSize);   
     }
     
     public boolean LoadShipFile(){
@@ -75,10 +71,52 @@ public class Model {
         return true;
     }
     
+    public boolean CheckShipsRequired(){
+        if(this.ships.length < 5){
+            return false;
+        }
+        boolean hasShipFive = false;
+        boolean hasShipFour = false;
+        boolean hasShipThree = false;
+        boolean hasShipTwoFirst = false;
+        boolean hasShipTwoSecond = false;
+        
+        for (Ship ship : this.ships) {
+            switch(ship.lenght){
+                case 5:
+                    if(!hasShipFive){
+                        hasShipFive = true;
+                    }
+                    break;
+                case 4:
+                    if(!hasShipFour){
+                        hasShipFour=true;
+                    }
+                    break;
+                case 3:
+                    if(!hasShipThree){
+                        hasShipThree=true;
+                    }
+                    break;
+                case 2:
+                    if(!hasShipTwoFirst){
+                        hasShipTwoFirst = true;
+                    } else if(!hasShipTwoSecond) {
+                        hasShipTwoSecond = true;
+                    }
+                    break;
+                    
+            }
+        }
+        return hasShipFive && hasShipFour && hasShipThree && hasShipTwoFirst && hasShipTwoSecond;
+    }
+    
     public void AddShipsToBoard(){
         for (Ship ship : this.ships) {
             this.board.PlaceShip(ship);
         }
+        setChanged(); // Model changed
+        notifyObservers(); // Notify the view
     }
     
     public ShotResult FireShot(String shotMade){  
@@ -100,6 +138,7 @@ public class Model {
                     break;
                 case 2:
                     result = ShotResult.SUNK;  
+                    sunkShipsCount++;
                     break;
                 default: 
                     result = ShotResult.HIT; 
@@ -114,6 +153,9 @@ public class Model {
         shot = new Shot(shotCoordinate, result);
         
         board.MarkShot(shot);
+        this.shotsFiredCount++;
+        setChanged(); // Model changed
+        notifyObservers(result); // Notify the view, passing the result
         return result;
     }
     
@@ -167,11 +209,14 @@ public class Model {
     }
     
     public boolean isGameOver() {
-        for (Ship ship : this.ships) {
-            if (!ship.isSunk()) {
-                return false;
-            }
-        }
-        return true;
+        return sunkShipsCount == ships.length;
+    }
+    
+    public int getShotsFiredCount() {
+        return this.shotsFiredCount;
+    }
+    
+    public Ship[] getShips() {
+        return this.ships;
     }
 }
