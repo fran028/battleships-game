@@ -13,9 +13,10 @@ public class BattleshipsGame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
         Model model = new Model(10);
         Controller controller = new Controller(model);
+        View view = new View(model, controller); // Create and show the view
         controller.StartGame();
     }
     

@@ -3,32 +3,46 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package battleshipsgame;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JButton;
+import javax.swing.JTextField;
 /**
  *
  * @author franc
  */
-public class Controller {
+public class Controller implements Observer {
     Model model; 
     CLI cli;
     
+    View view;  // Use the View class 
     
     public Controller(Model model){
         this.model = model;
         this.cli = new CLI(model);
+        this.model.addObserver(this);
+    } 
+
+    public void SetView(View view) {
+        this.view = view;  
     }
-    
-    public void StartGame(){
+
+    public void StartGame() {
         model.LoadShipFile();
-        model.AddShipsToBoard();
-        cli.displayBoard();
-        
-        while(!model.isGameOver()){
-            String target = cli.getUserInput();
-            ShotResult result = model.FireShot(target);
-            System.out.println("You fired at " + target + " and it was a " + result); 
-            cli.displayBoard();
+        model.AddShipsToBoard(); 
+    }
+ 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o == model) {
+            
         }
-        cli.displayWinMessage();
+    }
+
+
+    public void handleShot(String target){
+         model.FireShot(target);
     }
 }
