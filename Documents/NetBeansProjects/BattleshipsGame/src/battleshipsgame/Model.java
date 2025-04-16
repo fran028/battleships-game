@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  *
@@ -20,13 +21,13 @@ public class Model {
     
     public Model(int gridSize){ 
         this.board = new Board(gridSize);  
-        if(LoadShipFile()){
+        /*if(LoadShipFile()){
             System.out.println("Ships loaded");
         } else {
             System.out.println("Error loading Ships");
         }
         AddShipsToBoard(); 
-        this.board.PrintBoardCLI(true); 
+        this.board.PrintBoardCLI(true); */
     }
     
     public boolean LoadShipFile(){
@@ -74,19 +75,37 @@ public class Model {
         return true;
     }
     
-    private void AddShipsToBoard(){
+    public void AddShipsToBoard(){
         for (Ship ship : this.ships) {
             this.board.PlaceShip(ship);
         }
     }
     
     public ShotResult FireShot(String shotMade){  
+        System.out.println("FireShot, shot: "+shotMade);
         Coordinate shotCoordinate = DecodeShotLocation(shotMade);
+        
+        System.out.println("CheckShot, Coordiante: Row: "+shotCoordinate.row+", Column: "+shotCoordinate.column);
         ShotResult result;
                 
         if(board.CheckShot(shotCoordinate)){
-           result = ShotResult.HIT;  
-           AddShotToShip(shotCoordinate);
+            int shipState = AddShotToShip(shotCoordinate);
+            switch(shipState){
+                case 0: 
+                    result = ShotResult.MISS; 
+                    System.out.println("Error: No ship found to hit");
+                    break;
+                case 1: 
+                    result = ShotResult.HIT;  
+                    break;
+                case 2:
+                    result = ShotResult.SUNK;  
+                    break;
+                default: 
+                    result = ShotResult.HIT; 
+                    break;
+            }
+           
         } else {
            result = ShotResult.MISS;
         }  
@@ -98,7 +117,7 @@ public class Model {
         return result;
     }
     
-    private boolean AddShotToShip(Coordinate shotCoordinate){
+    private int AddShotToShip(Coordinate shotCoordinate){
         for (Ship ship : this.ships) {
             Coordinate shipCoordinate = ship.coordinate;
             Orientation orientation = ship.orientation;
@@ -119,28 +138,40 @@ public class Model {
                 }
                 if(shotCoordinate.column == column && shotCoordinate.row == row){
                     ship.Hitship();
-                    return true;
+                    if(ship.isSunk()){
+                        return 2;
+                    }
+                    return 1;
                 }  
             }
-        }
-        return false;
+        } 
+        return 0;
     }
     
     private Coordinate DecodeShotLocation(String input){
-        String rowString = input.substring(0,1); 
-        String columnString = input.substring(1);  
+        String columnString = input.substring(0,1); 
+        String rowString = input.substring(1);  
         
-        int column = Integer.parseInt(columnString);
-        int row;
+        int column;
+        int row = Integer.parseInt(rowString)-1;
         
-        if (rowString.length() == 1 && rowString.charAt(0) >= 'A' && rowString.charAt(0) <= 'J') {
-            row = rowString.charAt(0) - 'A' + 1; 
+        if (columnString.length() == 1 && columnString.charAt(0) >= 'A' && columnString.charAt(0) <= 'J') {
+            column = columnString.charAt(0) - 'A'; 
         } else {
-            System.err.println("Error: Invalid letter - " + rowString);
-            row = 0;
+            System.err.println("Error: Invalid letter - " + columnString);
+            column = 0;
         }
         
         Coordinate coordinate = new Coordinate(row, column);
         return coordinate;
+    }
+    
+    public boolean isGameOver() {
+        for (Ship ship : this.ships) {
+            if (!ship.isSunk()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

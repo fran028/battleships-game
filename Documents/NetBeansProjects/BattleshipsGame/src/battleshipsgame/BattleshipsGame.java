@@ -15,6 +15,8 @@ public class BattleshipsGame {
      */
     public static void main(String[] args) {
         Model model = new Model(10);
+        Controller controller = new Controller(model);
+        controller.StartGame();
     }
     
 }

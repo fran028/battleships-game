@@ -6,6 +6,7 @@ package battleshipsgame;
 
 import static battleshipsgame.Orientation.HORIZONTAL;
 import static battleshipsgame.Orientation.VERTICAL;
+import static battleshipsgame.ShotResult.MISS;
 
 /**
  *
@@ -55,29 +56,36 @@ public class Board {
     }
     
     public boolean MarkShot(Shot shot){
-        int x = shot.coordinate.row;
-        int y = shot.coordinate.column;
+        int row = shot.coordinate.row;
+        int column = shot.coordinate.column;
         ShotResult result = shot.result;
         if(null == result){
             return false;
         } else switch (result) {
             case MISS:
-                this.grid[x][y]="m";
+                this.grid[row][column]="m";
                 break;
-            case HIT:
-                this.grid[x][y] = "h";
+            case SUNK:
+                this.grid[row][column]="h";
                 break;
-            default:
+            case HIT: 
+                this.grid[row][column] = "h";
+                break;
+            default: 
+                System.out.println("Shot not marked");
                 return false;
         }
         return true;
     }
     
     public boolean CheckShot(Coordinate coordinate){
-        String cellState = this.grid[coordinate.row][coordinate.column];
-        if("s".equals(cellState) || "h".equals(cellState)){
+        String cellState = this.grid[coordinate.row][coordinate.column]; 
+        System.out.println("CheckShot, cell: "+cellState);
+        if("s".equals(cellState) || "h".equals(cellState)){ 
+            System.out.println("CheckShot, cell: "+cellState+" shot: true");
             return true;
         } 
+        System.out.println("CheckShot, cell: "+cellState+" shot: false");
         return false;
     }
     
@@ -117,13 +125,7 @@ public class Board {
         System.out.printf("|");
         System.out.print("\n");
         System.out.println("XX|A|B|C|D|E|F|G|H|I|J|");
-        
-        //System.out.printf(" |"); 
-        /*for(int top = 0; top < size*2-1; top++){
-            System.out.printf("-");
-        } 
-        System.out.printf("|");
-        System.out.printf("\n");*/
+       
         for(int i = 0; i < size; i++){ 
             if(i < 9){
                 System.out.print("0");
@@ -145,6 +147,12 @@ public class Board {
                     case "h":
                         System.out.printf("h");
                         break;
+                    case "m":
+                        System.out.printf("m");
+                        break;
+                    default: 
+                        System.out.printf(" ");
+                        break;
                     
                 } 
                 System.out.printf("|");
@@ -156,7 +164,7 @@ public class Board {
         for(int top = 0; top < size*2+1; top++){
             System.out.printf("-");
         }  
-        System.out.printf("|");
+        System.out.printf("|\n");
     }
      
             

@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package battleshipsgame;
 
@@ -8,8 +8,6 @@ package battleshipsgame;
  *
  * @author franc
  */
-public enum ShotResult {
-    HIT,
-    MISS,
-    SUNK
+public class View {
+    
 }
