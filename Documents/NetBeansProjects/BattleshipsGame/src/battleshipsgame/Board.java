@@ -89,7 +89,7 @@ public class Board {
         return false;
     }
     
-    private boolean CheckShipPosition(Coordinate coordinate, Orientation orientation, int lenght){ 
+    public boolean CheckShipPosition(Coordinate coordinate, Orientation orientation, int lenght){ 
         for(int i = 0; i<lenght; i++){
             int row = coordinate.row;
             int column = coordinate.column;
@@ -104,7 +104,7 @@ public class Board {
                     break;
             }
             // Check if it is outside the board
-            if(this.gridSize < column || this.gridSize < row){
+            if(this.gridSize <= column || this.gridSize <= row){
                 return false;
             }
             // Check if there is already a Ship in that position

@@ -16,5 +16,10 @@ public class Coordinate {
         this.row = row;
         this.column = column;
     }
+    
+    public String PrintCoordinate(){
+        String formattedString = String.format("( %d, %d)", this.row, this.column);
+        return formattedString;
+    }
      
 }

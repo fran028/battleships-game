@@ -15,9 +15,8 @@ import javax.swing.JTextField;
  */
 public class Controller implements Observer {
     Model model; 
-    CLI cli;
-    
-    View view;  // Use the View class 
+    CLI cli; 
+    View view;  
     
     public Controller(Model model){
         this.model = model;
@@ -30,7 +29,8 @@ public class Controller implements Observer {
     }
 
     public void StartGame() {
-        model.LoadShipFile();
+        model.GenerateRandomShips();
+        //model.LoadShipFile();
         model.AddShipsToBoard(); 
     }
  

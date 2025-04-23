@@ -22,6 +22,11 @@ public class View implements Observer {
     private JButton[][] gridButtons;
     private JLabel messageLabel; // Label for messages
     private JPanel statusPanel; // New panel for status/message label
+    
+    private Color cellColorWater = Color.BLUE;
+    private Color cellColorHit = Color.RED;
+    private Color cellColorMiss = Color.YELLOW; 
+    private Color cellColorShip = Color.GREEN; 
 
     public View(Model model, Controller controller) {
         this.model = model;
@@ -40,8 +45,8 @@ public class View implements Observer {
 
         // Board Panel (Grid of Buttons) - CREATE THIS FIRST
         createBoardPanel();
-        contentPane.add(boardPanel, BorderLayout.CENTER);
-
+        contentPane.add(boardPanel, BorderLayout.CENTER); 
+        
         // Title
         JLabel titleLabel = new JLabel("Battleship", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -118,26 +123,28 @@ public class View implements Observer {
                 switch (cellState) {
                     case "w": // Water
                         button.setText("");
-                        button.setBackground(Color.BLUE);
+                        button.setBackground(cellColorWater);
                         button.setEnabled(true);
                         break;
                     case "s": // Ship
                         if (model.isGameOver()) {
-                            button.setText("S"); // Show ships after game over
+                            button.setText("S"); // Show ships after game over 
+                            button.setBackground(cellColorShip);
                         } else {
                             button.setText(""); // Hide ships during game
                             button.setEnabled(true);
+                            
+                            button.setBackground(cellColorWater);
                         }
-                        button.setBackground(Color.BLUE);
                         break;
                     case "m": // Miss
                         button.setText("M");
-                        button.setBackground(Color.YELLOW); // Yellow for miss
+                        button.setBackground(cellColorMiss); // Yellow for miss
                         button.setEnabled(false);
                         break;
                     case "h": // Hit
                         button.setText("H");
-                        button.setBackground(Color.RED); // Red for hit
+                        button.setBackground(cellColorHit); // Red for hit
                         button.setEnabled(false);
                         break;
                 }

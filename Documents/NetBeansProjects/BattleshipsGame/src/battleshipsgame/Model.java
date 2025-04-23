@@ -9,9 +9,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import static java.lang.Math.random;
 import java.util.Observable;
 import java.util.List;
-
+import java.util.Random;
+import java.io.FileWriter; 
+import java.io.BufferedWriter; 
+import java.io.InputStream;
 /**
  *
  * @author franc
@@ -26,8 +30,39 @@ public class Model extends Observable {
         this.board = new Board(gridSize);   
     }
     
+    public void GenerateRandomShips(){
+        Random random = new Random();
+        int shipCount = 0;
+        int[] shipSizes = {5, 4, 3, 2, 2};
+        //try (InputStream inputStream = Model.class.getResourceAsStream(csvFile); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        
+        while(shipCount < 5){
+            int randomHorientation = random.nextInt(10);
+            Orientation orientation;
+            if(randomHorientation >= 5){
+                orientation = VERTICAL; 
+            } else {
+                orientation = HORIZONTAL; 
+            } 
+
+            int shipLength = shipSizes[shipCount];
+            Coordinate coord = new Coordinate(0,0);
+            boolean shipSet = false;
+            while(!shipSet){  
+                coord = new Coordinate(random.nextInt(board.gridSize), random.nextInt(board.gridSize)); 
+                shipSet = board.CheckShipPosition(coord, orientation,shipLength);
+            }
+            System.out.printf("Ship %d set\n", shipCount);
+            System.out.printf("At %s, orientation: %s, length: %d%n", coord.PrintCoordinate(), orientation, shipLength);
+            Ship tempShip = new Ship(shipLength, coord, orientation);
+
+            this.ships[shipCount] = tempShip; 
+            shipCount++;
+        } 
+    }
+    
     public boolean LoadShipFile(){
-        String csvFile = "../data/shipsList.csv"; // Path relative to the source packages
+        String csvFile = "shipsList.csv"; // Path relative to the source packages
 
         try (InputStream inputStream = Model.class.getResourceAsStream(csvFile);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
