@@ -31,8 +31,8 @@ public class View implements Observer {
     private Color cellColorMiss = Color.decode("#F5E9BF"); 
     private Color cellColorShip = Color.decode("#969696");  
     private Color winColor = Color.decode("#788374");  
-    private Color backgroundColor = Color.decode("#372A39"); // Default background color
-    private Color fontColor = Color.decode("#FDF1FF");
+    private Color backgroundColor = Color.decode("#2C2C3F"); // Default background color
+    private Color fontColor = Color.decode("#D5E8FF");
     private Font labelFont = new Font("Arial", Font.BOLD, 14); 
     
     private JLabel shotsFiredLabel = new JLabel("Shots Fired: 0");

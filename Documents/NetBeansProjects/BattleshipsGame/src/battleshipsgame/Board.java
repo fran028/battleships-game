@@ -99,70 +99,17 @@ public class Board {
                     break;
                 default:
                     break;
-            }
+            }  
             // Check if it is outside the board
             if(column >= this.gridSize || row >= this.gridSize ){
+                 
                 return false;
             }
             // Check if there is already a Ship in that position
-            if("S".equals(this.grid[row][column])){
+            if("s".equals(this.grid[row][column])){ 
                 return false;
             } 
         }
         return true;
-    }
-    
-    public void printBoardCLI(boolean withShips){
-        int size = this.gridSize;
-        System.out.println("Battleship Board");
-        System.out.printf("|");
-        for(int top = 0; top < size*2+1; top++){
-            System.out.printf("-");
-        }  
-        System.out.printf("|");
-        System.out.print("\n");
-        System.out.println("XX|A|B|C|D|E|F|G|H|I|J|");
-       
-        for(int i = 0; i < size; i++){ 
-            if(i < 9){
-                System.out.print("0");
-            }
-            System.out.print(i+1);
-            System.out.printf("|");
-            for(int j = 0; j < size; j++){
-                switch(this.grid[i][j]){
-                    case " ":
-                        System.out.printf(" ");
-                        break;
-                    case "s":
-                        if(withShips){
-                            System.out.printf("s");
-                        } else {
-                            System.out.printf(" ");
-                        }
-                        break;
-                    case "h":
-                        System.out.printf("h");
-                        break;
-                    case "m":
-                        System.out.printf("m");
-                        break;
-                    default: 
-                        System.out.printf(" ");
-                        break;
-                    
-                } 
-                System.out.printf("|");
-            }
-            
-            System.out.printf("\n"); 
-        }
-        System.out.printf("|");
-        for(int top = 0; top < size*2+1; top++){
-            System.out.printf("-");
-        }  
-        System.out.printf("|\n");
-    }
-     
-            
+    }    
 } 
