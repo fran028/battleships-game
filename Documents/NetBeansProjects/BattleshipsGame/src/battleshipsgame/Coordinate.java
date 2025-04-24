@@ -17,8 +17,13 @@ public class Coordinate {
         this.column = column;
     }
     
-    public String PrintCoordinate(){
-        String formattedString = String.format("( %d, %d)", this.row, this.column);
+    public String printCoordinate(){
+        String formattedString = String.format("( %d, %d)", this.row+1, this.column+1);
+        return formattedString;
+    }
+    
+    public String printCoordinateString(){ 
+        String formattedString = String.format("(%d, %s(%d))", this.row+1, String.valueOf((char) ('A' + this.column)),this.column+1 );
         return formattedString;
     }
      

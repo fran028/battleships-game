@@ -23,7 +23,7 @@ public class Ship {
         this.hits = 0;
     }
     
-    public void Hitship(){
+    public void hitship(){
         this.hits++;
         if(this.hits >= this.lenght){
             this.sunk = true;
@@ -38,15 +38,15 @@ public class Ship {
         this.sunk = sunk;
     }
     
-    public int GetLenght(){
+    public int getLenght(){
         return this.lenght;
     }
     
-    public Coordinate GetCoordinate(){
+    public Coordinate getCoordinate(){
         return this.coordinate;
     }
     
-    public Orientation GetOrientation(){
+    public Orientation getOrientation(){
         return this.orientation;
     }
 }

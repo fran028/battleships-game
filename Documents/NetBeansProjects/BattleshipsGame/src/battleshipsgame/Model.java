@@ -28,9 +28,17 @@ public class Model extends Observable {
     
     public Model(int gridSize){ 
         this.board = new Board(gridSize);   
+    } 
+        
+    public int getShotsFiredCount(){
+        return this.shotsFiredCount;
     }
     
-    public void GenerateRandomShips(){
+    public int getSunkShipsCount(){
+        return this.sunkShipsCount;
+    }
+    
+    public void generateRandomShips(){
         Random random = new Random();
         int shipCount = 0;
         int[] shipSizes = {5, 4, 3, 2, 2};
@@ -49,19 +57,18 @@ public class Model extends Observable {
             Coordinate coord = new Coordinate(0,0);
             boolean shipSet = false;
             while(!shipSet){  
-                coord = new Coordinate(random.nextInt(board.gridSize), random.nextInt(board.gridSize)); 
-                shipSet = board.CheckShipPosition(coord, orientation,shipLength);
+                coord = new Coordinate(random.nextInt(board.gridSize), random.nextInt(board.gridSize));  
+                shipSet = board.checkShipPosition(coord, orientation,shipLength);  
             }
-            System.out.printf("Ship %d set\n", shipCount);
-            System.out.printf("At %s, orientation: %s, length: %d%n", coord.PrintCoordinate(), orientation, shipLength);
+            System.out.printf("At %s, orientation: %s, length: %d%n", coord.printCoordinateString(), orientation, shipLength);
             Ship tempShip = new Ship(shipLength, coord, orientation);
-
+            board.placeShip(tempShip);
             this.ships[shipCount] = tempShip; 
             shipCount++;
-        } 
+        }  
     }
     
-    public boolean LoadShipFile(){
+    public boolean loadShipFile(){
         String csvFile = "shipsList.csv"; // Path relative to the source packages
 
         try (InputStream inputStream = Model.class.getResourceAsStream(csvFile);
@@ -106,10 +113,7 @@ public class Model extends Observable {
         return true;
     }
     
-    public boolean CheckShipsRequired(){
-        if(this.ships.length < 5){
-            return false;
-        }
+    public boolean checkShipsRequired(){ 
         boolean hasShipFive = false;
         boolean hasShipFour = false;
         boolean hasShipThree = false;
@@ -117,6 +121,9 @@ public class Model extends Observable {
         boolean hasShipTwoSecond = false;
         
         for (Ship ship : this.ships) {
+            if(ship == null){
+                return false;
+            }
             switch(ship.lenght){
                 case 5:
                     if(!hasShipFive){
@@ -146,33 +153,28 @@ public class Model extends Observable {
         return hasShipFive && hasShipFour && hasShipThree && hasShipTwoFirst && hasShipTwoSecond;
     }
     
-    public void AddShipsToBoard(){
+    public void addShipsToBoard(){
         for (Ship ship : this.ships) {
-            this.board.PlaceShip(ship);
+            this.board.placeShip(ship);
         }
         setChanged(); // Model changed
         notifyObservers(); // Notify the view
     }
     
-    public ShotResult FireShot(String shotMade){  
-        System.out.println("FireShot, shot: "+shotMade);
-        Coordinate shotCoordinate = DecodeShotLocation(shotMade);
-        
-        System.out.println("CheckShot, Coordiante: Row: "+shotCoordinate.row+", Column: "+shotCoordinate.column);
+    public ShotResult fireShot(String shotMade){  
+        Coordinate shotCoordinate = decodeShotLocation(shotMade);  
         ShotResult result;
-                
-        if(board.CheckShot(shotCoordinate)){
-            int shipState = AddShotToShip(shotCoordinate);
+        if(board.checkShot(shotCoordinate)){
+            int shipState = addShotToShip(shotCoordinate);
             switch(shipState){
                 case 0: 
                     result = ShotResult.MISS; 
-                    System.out.println("Error: No ship found to hit");
                     break;
                 case 1: 
                     result = ShotResult.HIT;  
                     break;
                 case 2:
-                    result = ShotResult.SUNK;  
+                    result = ShotResult.SUNK;   
                     sunkShipsCount++;
                     break;
                 default: 
@@ -181,28 +183,28 @@ public class Model extends Observable {
             }
            
         } else {
-           result = ShotResult.MISS;
+            result = ShotResult.MISS;
         }  
         
         Shot shot;
         shot = new Shot(shotCoordinate, result);
         
-        board.MarkShot(shot);
+        board.markShot(shot);
         this.shotsFiredCount++;
         setChanged(); // Model changed
         notifyObservers(result); // Notify the view, passing the result
         return result;
     }
     
-    private int AddShotToShip(Coordinate shotCoordinate){
+    private int addShotToShip(Coordinate shotCoordinate){
         for (Ship ship : this.ships) {
             Coordinate shipCoordinate = ship.coordinate;
             Orientation orientation = ship.orientation;
             int lenght = ship.lenght;
             
             for(int i = 0; i< lenght; i++){
-                int row = shipCoordinate.column;
-                int column = shipCoordinate.row;
+                int row = shipCoordinate.row;
+                int column = shipCoordinate.column;
                 switch (orientation) {
                     case HORIZONTAL:
                         column = column + i;
@@ -214,7 +216,7 @@ public class Model extends Observable {
                         break;
                 }
                 if(shotCoordinate.column == column && shotCoordinate.row == row){
-                    ship.Hitship();
+                    ship.hitship();
                     if(ship.isSunk()){
                         return 2;
                     }
@@ -225,7 +227,7 @@ public class Model extends Observable {
         return 0;
     }
     
-    private Coordinate DecodeShotLocation(String input){
+    private Coordinate decodeShotLocation(String input){
         String columnString = input.substring(0,1); 
         String rowString = input.substring(1);  
         
@@ -245,11 +247,7 @@ public class Model extends Observable {
     
     public boolean isGameOver() {
         return sunkShipsCount == ships.length;
-    }
-    
-    public int getShotsFiredCount() {
-        return this.shotsFiredCount;
-    }
+    } 
     
     public Ship[] getShips() {
         return this.ships;

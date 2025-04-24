@@ -17,11 +17,11 @@ public class Shot {
         this.result = result;
     }
     
-    public ShotResult GetResult(){
+    public ShotResult getResult(){
         return this.result;
     }
     
-    public Coordinate GetCoordinate(){
+    public Coordinate getCoordinate(){
         return this.coordinate;
     }
 }

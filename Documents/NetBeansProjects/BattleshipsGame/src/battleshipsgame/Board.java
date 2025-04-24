@@ -26,18 +26,18 @@ public class Board {
         }
     }
     
-    public boolean  PlaceShip(Ship ship){ 
+    public boolean  placeShip(Ship ship){ 
         Coordinate coordinate = ship.coordinate;
         Orientation orientation = ship.orientation;
         int lenght = ship.lenght; 
         
-        if(!CheckShipPosition(coordinate, orientation, lenght)){
+        if(!checkShipPosition(coordinate, orientation, lenght)){
             return false;
         }
         
         for(int i = 0; i<lenght; i++){ 
-            int row = coordinate.column;
-            int column = coordinate.row;
+            int row = coordinate.row;
+            int column = coordinate.column;
             switch (orientation) {
                 case HORIZONTAL:
                     column = column + i;
@@ -45,7 +45,7 @@ public class Board {
                 case VERTICAL:
                     row = row + i;
                     break;
-                default:
+                default:                        
                     break;
             }
             this.grid[row][column] = "s";
@@ -55,7 +55,7 @@ public class Board {
         
     }
     
-    public boolean MarkShot(Shot shot){
+    public boolean markShot(Shot shot){
         int row = shot.coordinate.row;
         int column = shot.coordinate.column;
         ShotResult result = shot.result;
@@ -78,18 +78,15 @@ public class Board {
         return true;
     }
     
-    public boolean CheckShot(Coordinate coordinate){
+    public boolean checkShot(Coordinate coordinate){
         String cellState = this.grid[coordinate.row][coordinate.column]; 
-        System.out.println("CheckShot, cell: "+cellState);
         if("s".equals(cellState) || "h".equals(cellState)){ 
-            System.out.println("CheckShot, cell: "+cellState+" shot: true");
             return true;
         } 
-        System.out.println("CheckShot, cell: "+cellState+" shot: false");
         return false;
     }
     
-    public boolean CheckShipPosition(Coordinate coordinate, Orientation orientation, int lenght){ 
+    public boolean checkShipPosition(Coordinate coordinate, Orientation orientation, int lenght){ 
         for(int i = 0; i<lenght; i++){
             int row = coordinate.row;
             int column = coordinate.column;
@@ -104,7 +101,7 @@ public class Board {
                     break;
             }
             // Check if it is outside the board
-            if(this.gridSize <= column || this.gridSize <= row){
+            if(column >= this.gridSize || row >= this.gridSize ){
                 return false;
             }
             // Check if there is already a Ship in that position
@@ -115,7 +112,7 @@ public class Board {
         return true;
     }
     
-    public void PrintBoardCLI(boolean withShips){
+    public void printBoardCLI(boolean withShips){
         int size = this.gridSize;
         System.out.println("Battleship Board");
         System.out.printf("|");
@@ -134,7 +131,7 @@ public class Board {
             System.out.printf("|");
             for(int j = 0; j < size; j++){
                 switch(this.grid[i][j]){
-                    case "w":
+                    case " ":
                         System.out.printf(" ");
                         break;
                     case "s":

@@ -20,31 +20,33 @@ public class CLI {
     }
 
     public void update() {
-        displayBoard();
+        //displayBoard();
+        displayBoardWithShips();
     }
  
     public void displayBoard() {
-        this.model.board.PrintBoardCLI(false);
-    } 
+        this.model.board.printBoardCLI(false);
+    }  
     
     public void displayBoardWithShips(){
-        this.model.board.PrintBoardCLI(true);
+        this.model.board.printBoardCLI(true);
+    }
+    
+    public void displayMessage(String message) {
+        System.out.println(message);
     }
  
     public String getUserInput() {
         System.out.print("Enter row and column to fire (e.g., A1, J10): ");
         String coord = scanner.nextLine(); 
-        scanner.nextLine(); // Consume newline
+        //scanner.nextLine(); // Consume newline
         return coord;
-    }
+    } 
  
-    public void displayMessage(String message) {
-        System.out.println(message);
-    }
     
     public void displayWinMessage(){
-        String message = "--- Congratulaions you won!!! ---";
-        System.out.println(message);
+        String winMessage = "--- Congratulaions you won!!! ---";
+        displayMessage(winMessage);
     }
 
     public void closeScanner() {
