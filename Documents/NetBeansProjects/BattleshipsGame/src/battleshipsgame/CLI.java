@@ -21,7 +21,7 @@ public class CLI {
 
     public void update() {
         //displayBoard();
-        displayBoardWithShips();
+        displayBoard();
     }
  
     public void displayBoard() {
@@ -89,16 +89,32 @@ public class CLI {
     }
  
     public String getUserInput() {
+        System.out.println("To end game write 'EXIT' or 'END'."); 
+        System.out.println("To show ships write 'SHOW'.");
         System.out.print("Enter row and column to fire (e.g., A1, J10): ");
         String coord = scanner.nextLine(); 
         //scanner.nextLine(); // Consume newline
         return coord;
     } 
- 
     
-    public void displayWinMessage(){
-        String winMessage = "--- Congratulaions you won!!! ---";
-        displayMessage(winMessage);
+    public void displayShotMessage(ShotResult result, String target){
+        String shotMessage = "Shot to ("+target+"): " + result;
+        displayMessage(shotMessage);
+    }
+    
+    public void displayErrorMessage(String error){
+        String errorMessage = "Error!: " + error;
+        displayMessage(errorMessage);
+    }
+    
+    public void displayWinMessage(){ 
+        displayMessage("--- CONGRATULATIONS YOU WON ---"); 
+        displayMessage("--- THANKS FOR PLAYING ---");
+    }
+    
+    public void displayEndMessage(){ 
+        displayMessage("--- GAME ENDED ---");
+        displayMessage("--- THANKS FOR PLAYING ---");
     }
 
     public void closeScanner() {

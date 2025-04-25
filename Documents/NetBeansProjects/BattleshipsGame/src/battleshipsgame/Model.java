@@ -153,37 +153,58 @@ public class Model extends Observable {
         return hasShipFive && hasShipFour && hasShipThree && hasShipTwoFirst && hasShipTwoSecond;
     }
     
-    public void addShipsToBoard(){
+    
+    public boolean addShipsToBoard(){
         for (Ship ship : this.ships) {
-            this.board.placeShip(ship);
+            if(!this.board.placeShip(ship)){
+                return false;
+            }
         }
         setChanged(); // Model changed
         notifyObservers(); // Notify the view
+        return true;
     }
     
     public ShotResult fireShot(String shotMade){  
         Coordinate shotCoordinate = decodeShotLocation(shotMade);  
+        if(shotCoordinate.row == -1 || shotCoordinate.column == -1){ 
+            setChanged(); // Model changed
+            notifyObservers(ShotResult.ERROR);
+            return ShotResult.ERROR;
+        }
+        
         ShotResult result;
-        if(board.checkShot(shotCoordinate)){
-            int shipState = addShotToShip(shotCoordinate);
-            switch(shipState){
-                case 0: 
-                    result = ShotResult.MISS; 
-                    break;
-                case 1: 
-                    result = ShotResult.HIT;  
-                    break;
-                case 2:
-                    result = ShotResult.SUNK;   
-                    sunkShipsCount++;
-                    break;
-                default: 
-                    result = ShotResult.HIT; 
-                    break;
-            }
+        
+        switch(board.checkShot(shotCoordinate)){
+            case 1:
+                int shipState = addShotToShip(shotCoordinate);
+                switch(shipState){
+                    case 0: 
+                        result = ShotResult.MISS; 
+                        break;
+                    case 1: 
+                        result = ShotResult.HIT;  
+                        break;
+                    case 2:
+                        result = ShotResult.SUNK;   
+                        sunkShipsCount++;
+                        break;
+                    default: 
+                        result = ShotResult.HIT; 
+                        break;
+                }
+                break;
            
-        } else {
-            result = ShotResult.MISS;
+            case 0:
+                result = ShotResult.MISS;
+                break;
+            case 2:
+                result = ShotResult.HIT;  
+                break;
+            default:
+                result = ShotResult.MISS;  
+                break;
+                
         }  
         
         Shot shot;
@@ -227,22 +248,40 @@ public class Model extends Observable {
         return 0;
     }
     
-    private Coordinate decodeShotLocation(String input){
+    private Coordinate decodeShotLocation(String input){  
         String columnString = input.substring(0,1); 
-        String rowString = input.substring(1);  
-        
+        String rowString = input.substring(1);   
+        if(!isNumber(rowString)){  
+            return new Coordinate(-1, -1);
+        }
+        if(rowString.length() > 2 || rowString.length() < 1 ){   
+            return new Coordinate(-1, -1);
+        }
         int column;
         int row = Integer.parseInt(rowString)-1;
-        
+        if(row < 0 || row > 9){  
+            row = -1;
+        }
         if (columnString.length() == 1 && columnString.charAt(0) >= 'A' && columnString.charAt(0) <= 'J') {
             column = columnString.charAt(0) - 'A'; 
-        } else {
-            System.err.println("Error: Invalid letter - " + columnString);
-            column = 0;
+        } else {   
+            column = -1;
         }
         
         Coordinate coordinate = new Coordinate(row, column);
         return coordinate;
+    }
+    
+    public static boolean isNumber(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false; // Found a digit
+            }
+        }
+        return true; // No digit found
     }
     
     public boolean isGameOver() {

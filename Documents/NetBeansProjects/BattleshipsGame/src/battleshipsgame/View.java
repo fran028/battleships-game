@@ -33,7 +33,8 @@ public class View implements Observer {
     private Color winColor = Color.decode("#788374");  
     private Color backgroundColor = Color.decode("#2C2C3F"); // Default background color
     private Color fontColor = Color.decode("#D5E8FF");
-    private Font labelFont = new Font("Arial", Font.BOLD, 14); 
+    private Font labelFont = new Font("Arial", Font.BOLD, 14);  
+    private Font titleFont = new Font("Arial", Font.BOLD, 24); 
     
     private JLabel shotsFiredLabel = new JLabel("Shots Fired: 0");
     private JLabel sunkShipsLabel = new JLabel("Ships Sunk: 0"); 
@@ -140,15 +141,28 @@ public class View implements Observer {
         if (arg instanceof ShotResult) { // Check if there's a ShotResult
             ShotResult result = (ShotResult) arg;
             if (model.isGameOver()) {
-                messageLabel.setForeground(fontColor); 
+                messageLabel.setForeground(winColor); 
                 messageLabel.setText("You won! All ships sunk in " + model.getShotsFiredCount() + " shots.");
                 disableAllButtons(); // Disable all buttons at game over
-            } else if (result == ShotResult.SUNK) {
-                messageLabel.setText("You sunk a ship!");
-            }  else {
-                messageLabel.setText("Shot " + result);
-            }
-        } else if (model.isGameOver()) {
+            } else {
+                switch(result){
+                    case SUNK: 
+                        messageLabel.setForeground(cellColorHit); 
+                        messageLabel.setText("You sunk a ship!");
+                        break;
+                    case ERROR: 
+                        messageLabel.setForeground(cellColorHit); 
+                        messageLabel.setText("ERROR");
+                    default: 
+                        messageLabel.setForeground(fontColor); 
+                        messageLabel.setText("Shot " + result);
+                        break;
+                }
+            } 
+        } 
+        
+        if (model.isGameOver()) { 
+            messageLabel.setForeground(winColor); 
             messageLabel.setText("You won! All ships sunk in " + model.getShotsFiredCount() + " shots.");
             disableAllButtons(); // Disable all buttons at game over
         }
@@ -159,7 +173,7 @@ public class View implements Observer {
         titlePanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center align, some spacing
         titlePanel.setBackground(backgroundColor);  
         titleLabel = new JLabel("BATTLESHIPS");
-        titleLabel.setFont(labelFont);
+        titleLabel.setFont(titleFont);
         titleLabel.setForeground(fontColor);  
         titlePanel.add(titleLabel); 
     }

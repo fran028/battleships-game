@@ -38,11 +38,12 @@ public class Controller implements Observer {
             this.model.generateRandomShips();
         } else {
             this.model.loadShipFile(); 
-
-            if(this.model.checkShipsRequired()){ 
-                this.model.addShipsToBoard(); 
-            } else {
+            if(!this.model.checkShipsRequired()){  
                 this.cli.displayMessage("There are not enought Ships");
+                System.exit(0);
+            }
+            if(!this.model.addShipsToBoard()){  
+                this.cli.displayMessage("Ships possitioning is incorrect"); 
                 System.exit(0);
             }
         } 
@@ -53,9 +54,28 @@ public class Controller implements Observer {
                 this.cli.update();
                 while (!this.model.isGameOver()) { 
                     String target = this.cli.getUserInput();
+                    if("EXIT".equals(target)|| "END".equals(target)){
+                        this.cli.displayBoardWithShips();
+                        this.cli.displayEndMessage();
+                        break;
+                    }
+                    if("SHOW".equals(target)){
+                        this.cli.displayBoardWithShips();
+                        continue;
+                    }
                     ShotResult result = model.fireShot(target); 
+                    switch(result){
+                        case ERROR:
+                            this.cli.displayErrorMessage("Wrong Coordinates");
+                            break;
+                        default:
+                            this.cli.displayShotMessage(result, target);
+                            break;
+                    }
                 }
-                this.cli.displayWinMessage();
+                if(this.model.isGameOver()){
+                    this.cli.displayWinMessage();
+                }
                 this.cli.closeScanner();
             }  
         
@@ -73,8 +93,8 @@ public class Controller implements Observer {
     }
 
 
-    public void handleShot(String target){ 
-        ShotResult result = this.model.fireShot(target);
+    public void handleShot(String target){  
+        ShotResult result = this.model.fireShot(target);  
         if (this.model.isGameOver()) {
             if(this.view != null){
                 System.out.println("YOU WON!!!");

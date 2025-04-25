@@ -10,11 +10,9 @@ import java.util.Scanner;
  *
  * @author franc
  */
-public class BattleshipsGame {
-
-    /**
-     * @param args the command line arguments
-     */
+// Main file of the project
+public class BattleshipsGame { 
+    
     public static void main(String[] args) { 
         Model model = new Model(10);
         Controller controller = new Controller(model);

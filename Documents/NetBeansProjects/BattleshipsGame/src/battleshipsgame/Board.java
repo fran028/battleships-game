@@ -78,12 +78,16 @@ public class Board {
         return true;
     }
     
-    public boolean checkShot(Coordinate coordinate){
-        String cellState = this.grid[coordinate.row][coordinate.column]; 
-        if("s".equals(cellState) || "h".equals(cellState)){ 
-            return true;
+    public int checkShot(Coordinate coordinate){
+        String cellState = this.grid[coordinate.row][coordinate.column];  
+        switch(cellState){
+            case "s":
+                return 1; 
+            case "h":
+                return 2; 
+            default:
+                return 0;
         } 
-        return false;
     }
     
     public boolean checkShipPosition(Coordinate coordinate, Orientation orientation, int lenght){ 
@@ -102,10 +106,10 @@ public class Board {
             }  
             // Check if it is outside the board
             if(column >= this.gridSize || row >= this.gridSize ){
-                 
                 return false;
             }
             // Check if there is already a Ship in that position
+             
             if("s".equals(this.grid[row][column])){ 
                 return false;
             } 

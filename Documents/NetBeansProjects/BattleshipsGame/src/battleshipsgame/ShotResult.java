@@ -11,5 +11,6 @@ package battleshipsgame;
 public enum ShotResult {
     HIT,
     MISS,
-    SUNK
+    SUNK,
+    ERROR
 }
