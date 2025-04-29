@@ -8,9 +8,10 @@ package battleshipsgame;
  *
  * @author franc
  */
+// List of types of shot result
 public enum ShotResult {
-    HIT,
-    MISS,
-    SUNK,
-    ERROR
+    HIT, // Shot hits ship "h" -> "h"
+    MISS, // Shot hits water "w" -> "m"
+    SUNK, // Shot sunks Ship 
+    ERROR // Not a valid shot
 }

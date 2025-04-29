@@ -23,7 +23,7 @@ public class Ship {
         this.hits = 0;
     }
     
-    public void hitship(){
+    public void hitShip(){
         this.hits++;
         if(this.hits >= this.lenght){
             this.sunk = true;

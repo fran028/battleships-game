@@ -14,9 +14,11 @@ import java.util.Scanner;
 public class BattleshipsGame { 
     
     public static void main(String[] args) { 
+        // Initiate model and controller
         Model model = new Model(10);
         Controller controller = new Controller(model);
         
+        // Ask user which version to play
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose interface:");
         System.out.println("1. GUI");
@@ -25,21 +27,22 @@ public class BattleshipsGame {
         int choice = scanner.nextInt(); 
         
         switch (choice) {
-            case 1:
+            case 1: // GUI Version
                 View view = new View(model, controller); // Create and show the view
-                controller.setView(view);
+                controller.setView(view); // Pass view to controller
                 break;
-            case 2:
+            case 2: // CLI Version
                 CLI cli = new CLI(model); // Create the CLI
-                controller.setCLI(cli);
+                controller.setCLI(cli); // Pass CLI to controller
                 break;
-            default:
+            default: // By default the CLI Version is used
                 System.out.println("Invalid choice. Using CLI.");
-                CLI defaultCli = new CLI(model);
-                controller.setCLI(defaultCli);
+                CLI defaultCli = new CLI(model); // Create the CLI
+                controller.setCLI(defaultCli); // Pass CLI to controller
                 break;
         }  
         
+        //Ask the user how to place ships on board 
         System.out.println("How to generate Ships");
         System.out.println("1. Automatic");
         System.out.println("2. File");
@@ -47,17 +50,18 @@ public class BattleshipsGame {
         int random = scanner.nextInt();  
         boolean RandomShips;
         switch (random) {
-            case 1:
+            case 1: // uses the system automatic placement
                 RandomShips = true;
                 break;
-            case 2:
+            case 2: // uses the file in system (shipsList.csv)
                 RandomShips = false;
                 break;
-            default:
+            default: // uses the automatic by default
                 System.out.println("Invalid choice. Using Automatic Generation.");
                 RandomShips = false;
                 break;
-        }   // Create and show the view
+        }   
+        // Start game
         controller.startGame(RandomShips); 
         scanner.close();
     }
