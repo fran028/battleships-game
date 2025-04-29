@@ -208,7 +208,7 @@ public class Model extends Observable {
                         break;
                     case 2: // Ship was sunk
                         result = ShotResult.SUNK;   
-                        sunkShipsCount++;
+                        this.sunkShipsCount++;
                         break;
                     default: // By defualt it is a hit
                         result = ShotResult.HIT; 
@@ -233,6 +233,8 @@ public class Model extends Observable {
         
         board.markShot(shot); // Updates board with new shot
         this.shotsFiredCount++; // Increase shot count
+       
+        
         setChanged(); // Model changed
         notifyObservers(result); // Notify the view, passing the result
         return result; // Return the result
@@ -317,7 +319,7 @@ public class Model extends Observable {
     
     //Check if all ships are sunk
     // Return a boolean based if the condition was met (True) or not (False)
-    public boolean isGameOver() {
+    public boolean isGameOver() { 
         return sunkShipsCount == ships.length;
     } 
     
