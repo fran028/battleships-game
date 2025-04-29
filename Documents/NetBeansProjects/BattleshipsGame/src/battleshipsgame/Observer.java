@@ -8,6 +8,7 @@ package battleshipsgame;
  *
  * @author franc
  */
+// Class that notifies other classes of changes in the Observable
 public interface Observer {
     void update(Observable o, Object arg);
 }

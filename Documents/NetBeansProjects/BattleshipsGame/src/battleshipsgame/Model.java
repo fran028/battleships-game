@@ -315,10 +315,13 @@ public class Model extends Observable {
         return true; // No digit found
     }
     
+    //Check if all ships are sunk
+    // Return a boolean based if the condition was met (True) or not (False)
     public boolean isGameOver() {
         return sunkShipsCount == ships.length;
     } 
     
+    // Returns the list of ships in the game
     public Ship[] getShips() {
         return this.ships;
     }
